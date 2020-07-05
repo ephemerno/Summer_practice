@@ -41,6 +41,7 @@ public class GraphPanel extends JPanel implements MouseListener, MouseMotionList
         hoveredEdge = null;
         repaint();
     }
+
     public void setTmpPath(List<Node> path) {
         this.tmpPath = path;
         hoveredEdge = null;
@@ -126,6 +127,31 @@ public class GraphPanel extends JPanel implements MouseListener, MouseMotionList
                 return;
             }
         }
+
+        if(hoveredEdge!=null){
+            if(e.isControlDown() && e.isShiftDown()){
+                graph.getEdges().remove(hoveredEdge);
+                hoveredEdge = null;
+                graph.setSolved(false);
+                repaint();
+                return;
+            }
+
+            String input = JOptionPane.showInputDialog("Enter weight for " + hoveredEdge.toString()
+                    + " : ");
+            try {
+                int weight = Integer.parseInt(input);
+                if (weight > 0) {
+                    hoveredEdge.setWeight(weight);
+                    graph.setSolved(false);
+                    repaint();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Weight should be positive");
+                }
+            } catch (NumberFormatException nfe) {}
+            return;
+        }
+
         if((e.isShiftDown() || graph.stepRealisation == 2) && selected != null && SwingUtilities.isRightMouseButton(e))  {
             if(!graph.isSource(selected)) {
                 setPath(selected.getPath());
